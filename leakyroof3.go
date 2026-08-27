@@ -381,15 +381,8 @@ func viewInv(ws *WorldState)DidDie{
 
 func gym(ws *WorldState)DidDie{
 	typeOut("Select your pokemon to use for this battle: ",ws)
-	for ind, item := range ws.CharInv{
-		fmt.Print(ind)
-		fmt.Print(" ) ")
-		fmt.Println(item.Title)
-	}
-	sc.Scan()
-	selText := sc.Text()
-	sel, _ := strconv.Atoi(selText)
 
+	sel := selectPokemon(ws)
 
 	yourAttacks := make([]attack,0)
 	switch(ws.CharInv[sel].Title){
@@ -560,7 +553,7 @@ func selectPokemon(ws *WorldState)int{
 }
 
 func randomEnergy()Energy{
-	return Energy(rand.Intn(int(GREEN)+1)) /* this is the last one in the const declaration */
+	return Energy(rand.Intn(int(GREEN)+1)+1) /* GREEN is the last one in the const declaration */
 }
 
 func treadmill(ws *WorldState)DidDie{
