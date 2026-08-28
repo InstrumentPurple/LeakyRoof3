@@ -448,11 +448,11 @@ func gym(ws *WorldState)DidDie{
 	ws.Health = 100
 	ohealth := 100
 
-	anyTox := !checkTox(ws.CharInv[sel].Stom.Silicate,ws.Tox.Silicate, "Silicate") ||
-		!checkTox(ws.CharInv[sel].Stom.Iron, ws.Tox.Iron, "Iron") ||
-		!checkTox(ws.CharInv[sel].Stom.Sludge, ws.Tox.Sludge, "Sludge") ||
-		!checkTox(ws.CharInv[sel].Stom.Titanium, ws.Tox.Titanium, "Titanium") ||
-		!checkTox(ws.CharInv[sel].Stom.Sugar, ws.Tox.Sugar, "Sugar")
+	anyTox := checkTox(ws.CharInv[sel].Stom.Silicate,ws.Tox.Silicate, "Silicate") ||
+		checkTox(ws.CharInv[sel].Stom.Iron, ws.Tox.Iron, "Iron") ||
+		checkTox(ws.CharInv[sel].Stom.Sludge, ws.Tox.Sludge, "Sludge") ||
+		checkTox(ws.CharInv[sel].Stom.Titanium, ws.Tox.Titanium, "Titanium") ||
+		checkTox(ws.CharInv[sel].Stom.Sugar, ws.Tox.Sugar, "Sugar")
 
 	if anyTox{
 		fmt.Println("because your pokemon isn't healthy they will have less HP!")
@@ -485,7 +485,7 @@ func gym(ws *WorldState)DidDie{
 			}
 
 		} else {
-			randA := rand.Intn(len(opponent) * 1000) / 1000
+			randA := rand.Intn(len(opponent))
 			ws.Health -= opponent[randA].damage
 			fmt.Println(name, " uses ")
 			typeOut(opponent[randA].title, ws)
