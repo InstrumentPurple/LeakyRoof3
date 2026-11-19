@@ -125,13 +125,16 @@ func gameLoop(commands *map[string]Command, ws *WorldState){
 		if incmd{
 			dieState := fn(ws)
 			if dieState{
-				typeOut("you have died!", ws)
 				gameExit(ws)
 			}
 		} else if cmd=="help" {
 			for name,_ := range *commands{
 				fmt.Println(name)
 			}
+		} else if cmd=="diesave" {
+			save(ws)
+			die(ws)
+			gameExit(ws)
 		} else {
 			typeOut("error command not found",ws)
 		}
@@ -146,6 +149,7 @@ func drinkMoca(ws *WorldState) DidDie {
 
 
 func die(ws *WorldState) DidDie {
+	typeOut("you have died!", ws)
 	return true
 }
 
@@ -384,6 +388,7 @@ func gym(ws *WorldState)DidDie{
 
 	sel := selectPokemon(ws)
 
+	weaponTitles := []string{"A great big one", "Tonfa"}
 	yourAttacks := make([]attack,0)
 	switch(ws.CharInv[sel].Title){
 		case "Magnemite":
@@ -405,6 +410,20 @@ func gym(ws *WorldState)DidDie{
 				attack{title: "Hot Coco", damage: 30, reqMuch: 1, req:ELECTRIC},
 			}
 	}
+
+	/* add weapons purchased */
+
+	for _,item := range ws.CharInv{
+		for _, wTitle := range weaponTitles{
+			if item.Title == wTitle{
+				switch wTitle {
+				case "Tonfa": yourAttacks = append(yourAttacks, attack{title: wTitle, damage: 33, reqMuch:0})
+				case "A great big one": yourAttacks = append(yourAttacks, attack{title: wTitle, damage: 70, reqMuch:0})
+				}
+			}
+		}
+	}
+	
 	enemies := map[string]([]attack){
 		"Charmander": []attack{
 			attack{title: "Fire stream", damage: 15, reqMuch: 1, req:FIRE},
@@ -578,10 +597,9 @@ func checkEnergy(ws *WorldState)DidDie{
 }
 
 
-
 func main(){
 	fmt.Println("Leaky roof 3: beyond the minerals")
-
+	fmt.Println("enter the word help for a list of commands")
 	var ws WorldState
 
 	ws.UnmocaDur,_ = time.ParseDuration("18ms")
@@ -628,13 +646,15 @@ func main(){
 	ws.StoreItems = []StoreItem{
 		{Title:"Miltank",Desc:"Pokemon. This cow won't disapoint.", Price:2000.0, IsPM: true},
 		{Title:"Umbreon",Desc:"Pokemon. This dark type is clever.", Price:2000.0, IsPM: true},
+		{Title:"A great big one", Desc:"Equippable weapon. Single Use per battle.", Price:30_000.0, IsPM: false},
+		{Title:"Tonfa", Desc:"Equippable weapon. Unlimited use.", Price:12_000.0, IsPM:false},
 	}
 	ws.Tox = FoodContent{Silicate:80.0, Iron: 60.0, Sludge:2.0, Titanium:90.0, Sugar: 500.0}
 	ws.Energies = map[Energy]float64{}
 
 	sc = bufio.NewScanner(os.Stdin)
 
-	/* help not here. it's implemented in gameLoop */
+	/* help and diesave not here. it's implemented in gameLoop */
 	commands := map[string]Command{
 		"moca":drinkMoca,
 		"feed":feed,
