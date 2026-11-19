@@ -409,6 +409,12 @@ func gym(ws *WorldState)DidDie{
 				attack{title: "Ice cream", damage: 37, reqMuch: 1, req:WATER},
 				attack{title: "Hot Coco", damage: 30, reqMuch: 1, req:ELECTRIC},
 			}
+		case "JigglyPuff":
+			yourAttacks = []attack{
+				attack{title: "Spill sleepytime tea on them", damage: 35, reqMuch: 1, req: WATER },
+				attack{title: "Deface the face", damage: 25, reqMuch: 1, req:PSY},
+				attack{title: "Sandman", damage: 20, reqMuch: 0},
+			}
 	}
 
 	/* add weapons purchased */
@@ -596,6 +602,29 @@ func checkEnergy(ws *WorldState)DidDie{
 	return false
 }
 
+func wonderEn(ws *WorldState)DidDie{
+	if ws.Wallet >= 250.0{
+		ws.Wallet -= 250.0
+		fmt.Println("Purchased energy")
+
+		A2 := float64(rand.Intn(3.0)) + 1.0
+		A1 :=  float64(rand.Intn(3.0)) + 1.0
+
+		E1 := Energy(rand.Intn(GREEN)+1)
+		fmt.Println(energyToString(E1), A1)
+
+		E2 := Energy(rand.Intn(GREEN)+1)
+		fmt.Println(energyToString(E2), A2)
+
+		ws.Energies[E1] += A1
+		ws.Energies[E2] += A2
+	} else {
+		fmt.Println("must have at least 250 coins")
+	}
+
+	return false
+}
+
 
 func main(){
 	fmt.Println("Leaky roof 3: beyond the minerals")
@@ -646,6 +675,7 @@ func main(){
 	ws.StoreItems = []StoreItem{
 		{Title:"Miltank",Desc:"Pokemon. This cow won't disapoint.", Price:2000.0, IsPM: true},
 		{Title:"Umbreon",Desc:"Pokemon. This dark type is clever.", Price:2000.0, IsPM: true},
+		{Title:"JigglyPuff",Desc:"Pokemon. Be prepared for a good night's sleep.", Price: 3000.0, IsPM: true},
 		{Title:"A great big one", Desc:"Equippable weapon. Single Use per battle.", Price:30_000.0, IsPM: false},
 		{Title:"Tonfa", Desc:"Equippable weapon. Unlimited use.", Price:12_000.0, IsPM:false},
 	}
@@ -669,6 +699,7 @@ func main(){
 		"shower":shower,
 		"news paper":newsPaper,
 		"treadmill":treadmill,
+		"wonder energy": wonderEn,
 		"check energy":checkEnergy,
 	}
 
